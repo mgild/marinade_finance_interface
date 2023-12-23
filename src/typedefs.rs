@@ -1,35 +1,66 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
-pub struct Fee {
-    pub basis_points: u32,
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct SplitStakeAccountInfo {
+    pub account: Pubkey,
+    pub index: u32,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
-pub struct InitializeData {
-    pub admin_authority: Pubkey,
-    pub validator_manager_authority: Pubkey,
-    pub min_stake: u64,
-    pub reward_fee: Fee,
-    pub liq_pool: LiqPoolInitializeData,
-    pub additional_stake_record_space: u32,
-    pub additional_validator_record_space: u32,
-    pub slots_for_stake_delta: u64,
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct U64ValueChange {
+    pub old: u64,
+    pub new: u64,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
-pub struct LiqPoolInitializeData {
-    pub lp_liquidity_target: u64,
-    pub lp_max_fee: Fee,
-    pub lp_min_fee: Fee,
-    pub lp_treasury_cut: Fee,
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct U32ValueChange {
+    pub old: u32,
+    pub new: u32,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct FeeValueChange {
+    pub old: Fee,
+    pub new: Fee,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct FeeCentsValueChange {
+    pub old: FeeCents,
+    pub new: FeeCents,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct PubkeyValueChange {
+    pub old: Pubkey,
+    pub new: Pubkey,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct BoolValueChange {
+    pub old: bool,
+    pub new: bool,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ChangeAuthorityData {
     pub admin: Option<Pubkey>,
     pub validator_manager: Option<Pubkey>,
     pub operational_sol_account: Option<Pubkey>,
     pub treasury_msol_account: Option<Pubkey>,
+    pub pause_authority: Option<Pubkey>,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct ConfigLpParams {
+    pub min_fee: Option<Fee>,
+    pub max_fee: Option<Fee>,
+    pub liquidity_target: Option<u64>,
+    pub treasury_cut: Option<Fee>,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ConfigMarinadeParams {
     pub rewards_fee: Option<Fee>,
     pub slots_for_stake_delta: Option<u64>,
@@ -38,9 +69,44 @@ pub struct ConfigMarinadeParams {
     pub min_withdraw: Option<u64>,
     pub staking_sol_cap: Option<u64>,
     pub liquidity_sol_cap: Option<u64>,
-    pub auto_add_validator_enabled: Option<bool>,
+    pub withdraw_stake_account_enabled: Option<bool>,
+    pub delayed_unstake_fee: Option<FeeCents>,
+    pub withdraw_stake_account_fee: Option<FeeCents>,
+    pub max_stake_moved_per_epoch: Option<Fee>,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct InitializeData {
+    pub admin_authority: Pubkey,
+    pub validator_manager_authority: Pubkey,
+    pub min_stake: u64,
+    pub rewards_fee: Fee,
+    pub liq_pool: LiqPoolInitializeData,
+    pub additional_stake_record_space: u32,
+    pub additional_validator_record_space: u32,
+    pub slots_for_stake_delta: u64,
+    pub pause_authority: Pubkey,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct LiqPoolInitializeData {
+    pub lp_liquidity_target: u64,
+    pub lp_max_fee: Fee,
+    pub lp_min_fee: Fee,
+    pub lp_treasury_cut: Fee,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct Fee {
+    pub basis_points: u32,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct FeeCents {
+    pub bp_cents: u32,
+}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LiqPool {
     pub lp_mint: Pubkey,
     pub lp_mint_authority_bump_seed: u8,
@@ -55,22 +121,28 @@ pub struct LiqPool {
     pub lent_from_sol_leg: u64,
     pub liquidity_sol_cap: u64,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct List {
     pub account: Pubkey,
     pub item_size: u32,
     pub count: u32,
-    pub new_account: Pubkey,
-    pub copied_count: u32,
+    pub reserved1: Pubkey,
+    pub reserved2: u32,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct StakeRecord {
     pub stake_account: Pubkey,
     pub last_update_delegated_lamports: u64,
     pub last_update_epoch: u64,
     pub is_emergency_unstaking: u8,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct StakeList {}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct StakeSystem {
     pub stake_list: List,
     pub delayed_unstake_cooling_down: u64,
@@ -81,7 +153,8 @@ pub struct StakeSystem {
     pub min_stake: u64,
     pub extra_stake_delta_runs: u32,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValidatorRecord {
     pub validator_account: Pubkey,
     pub active_balance: u64,
@@ -89,7 +162,11 @@ pub struct ValidatorRecord {
     pub last_stake_delta_epoch: u64,
     pub duplication_flag_bump_seed: u8,
 }
-#[derive(Clone, Debug, BorshDeserialize, BorshSerialize)]
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct ValidatorList {}
+#[derive(Clone, Debug, BorshDeserialize, BorshSerialize, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValidatorSystem {
     pub validator_list: List,
     pub manager_authority: Pubkey,
