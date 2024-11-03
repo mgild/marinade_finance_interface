@@ -9,7 +9,6 @@ solana-program = "=1.18"
 thiserror = "^1"
 num-derive = ">=0.1"
 num-traits = ">=0.1"
-solana_rbpf = "=0.8.5"
 
 [dependencies.serde]
 optional = true
